@@ -3,6 +3,10 @@ uuid = "3176a976-b3b9-4cda-901e-e02eb5f9c6d7"
 authors = ["Chris du Plessis"]
 version = "0.1.0"
 
+[deps]
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
 [compat]
 julia = "1"
 
