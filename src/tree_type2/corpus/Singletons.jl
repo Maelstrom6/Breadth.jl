@@ -1,14 +1,11 @@
-abstract type ASingleton <: AAtom end
 
-abstract type ASingletonStatement <: ASingleton end
-abstract type ASingletonSet <: ASingleton end
-abstract type ASingletonExpression <: ASingleton end
 
 
 TRUE = Node("TRUE", ASingletonStatement)
 FALSE = Node("FALSE", ASingletonStatement)
 UNKNOWN = Node("UNKNOWN", ASingletonStatement)
-
+UNKNOWABLE = Node("UNKNOWABLE", ASingletonStatement)
+export TRUE, FALSE, UNKNWON, UNKNOWABLE
 
 
 macro singleton_set(parent::Symbol, abstract_type::Symbol, name::Symbol)
@@ -30,6 +27,8 @@ Functions(set) = Node("Functions", AFunctions{typeof(set)})  # the set of functi
 
 @singleton_set AΩ A∅ ∅
 @singleton_set AΩ Aℝ ℝ
+
+export Ω, Statements, Sets, Functions, Numbers, ∅
 
 quick_range(::Type{<:ABasic}) = AΩ
 quick_range(::Type{<:ALogicOperator}) = AStatements

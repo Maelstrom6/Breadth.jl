@@ -16,17 +16,17 @@ abstract type AOperator <: ANode end
 
 abstract type AUnknown <: AAtom end
 abstract type AVariable <: AUnknown end
-struct Variable{T} <: AVariable where T
+struct Variable{T} <: AVariable
 end
 
 abstract type AWild <: AUnknown end
-struct Wild{T} <: AWild where T
+struct Wild{T} <: AWild
 end
 
 abstract type ASingleton <: AAtom end
+
 abstract type ASingletonStatement <: ASingleton end
 abstract type ASingletonSet <: ASingleton end
-
 abstract type ASingletonExpression <: ASingleton end
 
 wild_symbol(name::String, set::Type{<:ASingletonSet}) = Node(name, Wild{set})
@@ -34,6 +34,7 @@ wild_symbol(name::String, set::Node) = Node(name, Wild{class(set)})
 
 symbol(name::String, set::Type{<:ASingletonSet}) = Node(name, Variable{set})
 symbol(name::String, set::Node) = Node(name, Variable{class(set)})
+export symbol
 
 # External types
 abstract type ANonBasic <: ABasic end
