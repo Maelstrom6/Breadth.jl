@@ -18,7 +18,7 @@ abstract type ALogicFunction <: AFunctionSymbol end
 Base.show(io::IO, self::Term{<:ANot}) = print(io, "$(Meta.parse("$(data(self))($(args(self)[1]))"))")
 
 @new_function(ALogicFunction, AImplies, Implies, (Statements, Statements), Statements, 2, ⟹)
-@new_function(ALogicFunction, AEquivalent, Equivalent, (Statements, Statements), Statements, 2, ≡)
+@new_function(ALogicFunction, AEquivalent, Equivalent, (Statements, Statements), Statements, 2, ⩶)
 
 @new_function(ALogicFunction, AElementOf, ElementOf, (Ω, Sets), Statements, 2, ∈, false)
 @new_function(ALogicFunction, ASubset, Subset, (Sets, Sets), Statements, 2, ⊂, false)

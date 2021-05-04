@@ -17,3 +17,8 @@ using Test
     println(domain(~x))
     println(codomain(~x))
 end
+
+@testset "Theorems" begin
+    x = Variable("x", Statements)
+    println(isapplicable(x ∨ x, x ∨ x))
+end

@@ -60,6 +60,7 @@ export Variable
 
 struct FuncVariable <: AVariable end
 FuncVariable(name::Symbol, domain::Term, codomain::Term) = Term(name, FuncVariable, (domain, codomain))
+FuncVariable(name::String, domain::Term, codomain::Term) = FuncVariable(Symbol(name), domain, codomain)
 (f::Term{FuncVariable})(x...) = Term(data(f), FuncVariable, x)
 domain(f::Term{<:FuncVariable}) = args(f)[1]
 codomain(f::Term{<:FuncVariable}) = args(f)[2]

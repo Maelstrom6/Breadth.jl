@@ -1,5 +1,5 @@
 module Breadth
-import Base.~, Base.∈, Base.∪, Base.∩, Base.-
+import Base.~, Base.∈, Base.∪, Base.∩, Base.-#, Base.:(≡)
 include("tree_type3/__init__.jl")
 
 # macro ex(func)
