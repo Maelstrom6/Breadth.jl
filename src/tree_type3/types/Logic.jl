@@ -12,6 +12,7 @@ abstract type ALogicConstant <: AConstantSymbol end
 ### Functions ###
 abstract type ALogicFunction <: AFunctionSymbol end
 
+println(@macroexpand @new_function(ALogicFunction, AAnd, And, (AStatements, AStatements), AStatements, 2, ∧))
 @new_function(ALogicFunction, AAnd, And, (AStatements, AStatements), AStatements, 2, ∧)
 @new_function(ALogicFunction, AOr, Or, (AStatements, AStatements), AStatements, 2, ∨)
 @new_function(ALogicFunction, ANot, Not, (AStatements,), AStatements, 2, ~, false)

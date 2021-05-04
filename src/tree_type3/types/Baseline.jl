@@ -23,22 +23,9 @@ func(self::Term) = func(class(self))
 domain(::Term) = ∅
 codomain(::Term) = ∅
 args(self::Term) = self.args
-export domain, codomain
-
-# this is much faster than hash of an array of Any
-# hashvec(xs, z) = foldr(hash, xs, init=z)
-
-# function Base.hash(t::Term{T}, salt::UInt) where T
-#     !iszero(salt) && return hash(hash(t, zero(UInt)), salt)
-#     h = t.hash[]
-#     !iszero(h) && return h
-#     h′ = hashvec(arguments(t), hash(operation(t), hash(T, salt)))
-#     t.hash[] = h′
-#     return h′
-# end
+export domain, codomain, arity
 
 ### Symbols ###
-
 """
 function symbols and constant symbols
     """
@@ -52,9 +39,9 @@ roots of trees can only ever be a subtype of this
 can also be called singletons or atoms
 """
 abstract type AConstantSymbol <: AFixed end
-domain(::AConstantSymbol) = ∅
-### Variables ###
+domain(::Term{<:AConstantSymbol}) = ∅
 
+### Variables ###
 """
 unknowns like `x` and `f`
 all unknwons have domains (values that they can take in) and
@@ -66,6 +53,7 @@ struct Variable <: AVariable end
 Variable(name::Symbol, codomain::Term) = Term(name, Variable, (codomain,))
 Variable(name::String, codomain::Term) = Variable(Symbol(name), codomain)
 Base.show(io::IO, self::Term{<:AVariable}) = print(io, data(self))
+codomain(self::Term{<:AVariable}) = args(self)[1]
 export Variable
 
 struct FuncVariable <: AVariable end
@@ -92,7 +80,7 @@ macro new_constant(parent::Symbol, abstract_type::Symbol, name::Symbol, codomain
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
         $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
         Base.show(io::IO, x::Term{<:$(esc(abstract_type))}) = print(io, $(Meta.quot(name)))
-        codomain(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
+        $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
         export $(esc(name))
     end
 end
@@ -102,7 +90,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
         struct $(esc(name)) <: $(esc(abstract_type)) end
         $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(name)), $(esc(name)), x)
-        arity($(esc(name))) = $(esc(arity))
+        $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
+        $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
+        $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
 
         export $(esc(name))
     end
@@ -114,9 +104,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
             $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
-            domain(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
-            cdomain(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
-            arity($(esc(name))) = $(esc(arity))
+            $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
+            $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
+            $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
 
             $(esc(latex_name))(x::Vararg{Term}) = $(esc(name))(x...)
 
@@ -127,9 +117,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
             $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
-            domain(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
-            cdomain(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
-            arity($(esc(name))) = $(esc(arity))
+            $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
+            $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
+            $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
 
             $(esc(latex_name))(x::Vararg{Term}) = $(esc(name))(x...)
 
