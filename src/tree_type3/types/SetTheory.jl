@@ -13,10 +13,10 @@ abstract type ASetConstant <: AConstantSymbol end
 ### Functions ###
 abstract type ASetFunction <: AFunctionSymbol end
 
-@new_function(ASetFunction, ASetUnion, SetUnion, (ASets, ASets), ASets, 2, ∪, false)
-@new_function(ASetFunction, ASetIntersection, SetIntersection, (ASets, ASets), ASets, 2, ∩, false)
-@new_function(ASetFunction, ASetDifference, SetDifference, (ASets, ASets), ASets, 2, -, false)
+@new_function(ASetFunction, ASetUnion, SetUnion, (Sets, Sets), Sets, 2, ∪, false)
+@new_function(ASetFunction, ASetIntersection, SetIntersection, (Sets, Sets), Sets, 2, ∩, false)
+@new_function(ASetFunction, ASetDifference, SetDifference, (Sets, Sets), Sets, 2, -, false)
 
-@new_function(ASetFunction, AConditionSet, ConditionSet, (AVariable, AStatements), ASets, 2)
-ConditionSet(x::Term, condition::Term) = Term(:ConditionSet, AConditionSet, (x, condition))  # {x | condition}
+@new_function(ASetFunction, AConditionSet, ConditionSet, (Variable, Statements), Sets, 2)
+ConditionSet(x::Term, condition::Term) = Term(:ConditionSet, ConditionSet, (x, condition))  # {x | condition}
 Base.show(io::IO, self::Term{<:AConditionSet}) = print(io, "$(Meta.parse("$(data(self))($(args(self)[1]), $(args(self)[2]))"))")

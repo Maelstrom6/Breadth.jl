@@ -56,6 +56,12 @@ A function f is invloute if f(f(x)) = x
 """
 macro involute(f::Symbol, x::Symbol)
     return quote
-        $(esc(f))($(esc(f))($(esc(x)))) ≡ $(esc(x))
+        $(esc(f))($(esc(f))($(esc(x)))), $(esc(x))
+    end
+end
+
+macro re_involute(f::Symbol, x::Symbol)
+    return quote
+        $(esc(x)), $(esc(f))($(esc(f))($(esc(x))))
     end
 end

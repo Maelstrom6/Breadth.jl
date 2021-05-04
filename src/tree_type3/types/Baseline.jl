@@ -9,19 +9,20 @@ struct Term{T<:ABasic}
     data::Symbol
     class::Type{T}
     args::NTuple{N,Term} where N
-    hash::Ref{UInt}
 end
 
 # constructors
-Term(data::Symbol, class::Type{<:ABasic}, args::NTuple{N,Term} where N) = Term(data, class, args, Ref{UInt}(0))
+# Term(data::Symbol, class::Type{<:ABasic}, args::NTuple{N,Term} where N) = Term(data, class, args, Ref{UInt}(0))
 Term(data::Symbol, class::Type{<:ABasic}) = Term(data, class, ())
 
 # helper functions for Term
 data(self::Term) = self.data
 class(self::Term) = self.class
 func(self::Term) = func(class(self))
-domain(::Term) = ∅
-codomain(::Term) = ∅
+domain(x::Term) = domain(typeof(x))
+codomain(x::Term) = codomain(typeof(x))
+domain(::Type{Term}) = ∅
+codomain(::Type{Term}) = ∅
 args(self::Term) = self.args
 export domain, codomain, arity
 
@@ -39,7 +40,7 @@ roots of trees can only ever be a subtype of this
 can also be called singletons or atoms
 """
 abstract type AConstantSymbol <: AFixed end
-domain(::Term{<:AConstantSymbol}) = ∅
+domain(::Type{<:Term{<:AConstantSymbol}}) = ∅
 
 ### Variables ###
 """
@@ -53,6 +54,7 @@ struct Variable <: AVariable end
 Variable(name::Symbol, codomain::Term) = Term(name, Variable, (codomain,))
 Variable(name::String, codomain::Term) = Variable(Symbol(name), codomain)
 Base.show(io::IO, self::Term{<:AVariable}) = print(io, data(self))
+domain(::Term{<:AVariable}) = ∅
 codomain(self::Term{<:AVariable}) = args(self)[1]
 export Variable
 
@@ -80,7 +82,7 @@ macro new_constant(parent::Symbol, abstract_type::Symbol, name::Symbol, codomain
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
         $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
         Base.show(io::IO, x::Term{<:$(esc(abstract_type))}) = print(io, $(Meta.quot(name)))
-        $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
+        $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
         export $(esc(name))
     end
 end
@@ -90,9 +92,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
         struct $(esc(name)) <: $(esc(abstract_type)) end
         $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(name)), $(esc(name)), x)
-        $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
-        $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
-        $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
+        $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
+        $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
+        $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))
 
         export $(esc(name))
     end
@@ -104,9 +106,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
             $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
-            $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
-            $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
-            $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
+            $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
+            $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
+            $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))
 
             $(esc(latex_name))(x::Vararg{Term}) = $(esc(name))(x...)
 
@@ -117,9 +119,9 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
             $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
-            $(esc(:domain))(::Term{<:$(esc(abstract_type))}) = $(esc(domain))
-            $(esc(:codomain))(::Term{<:$(esc(abstract_type))}) = $(esc(codomain))
-            $(esc(:arity))(::Term{<:$(esc(abstract_type))}) = $(esc(arity))
+            $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
+            $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
+            $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))
 
             $(esc(latex_name))(x::Vararg{Term}) = $(esc(name))(x...)
 
