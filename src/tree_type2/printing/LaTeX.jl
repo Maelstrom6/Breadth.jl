@@ -38,7 +38,3 @@ end
 function to_latex(self::Node{<:ACall}, prev_operator::Symbol, pos::Symbol)::String
     return "$(to_latex(args(self)[1]))($(to_latex(args(self)[2])))"
 end
-
-
-Base.operator_precedence
-Base.operator_associativity

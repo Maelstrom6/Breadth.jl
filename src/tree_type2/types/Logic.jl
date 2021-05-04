@@ -6,7 +6,7 @@ end
 export ∧
 
 abstract type AForAll <: ALogicOperator end
-ForAll(variable::Node, set::Node, statement::Node) = Node("A", AForAll, (variable, set, statement))
+ForAll(variable::Node, set::Node, statement::Node) = Node("∀", AForAll, (variable, set, statement))
 
 abstract type AOr <: ALogicOperator end
 struct Or <: AOr
@@ -15,7 +15,7 @@ end
 export ∨
 
 abstract type AExists <: ALogicOperator end
-Exists(variable::Node, set::Node, statement::Node) = Node("E", AOr, (variable, set, statement))
+Exists(variable::Node, set::Node, statement::Node) = Node("∃", AOr, (variable, set, statement))
 export Exists
 
 abstract type ANot <: ALogicOperator end
