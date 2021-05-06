@@ -11,6 +11,9 @@ append!(truths, [
     Axiom("And is distributive over Or", @distributive(∧, ∨, P, Q, R)),
     Axiom("And is factorisable over Or", @factorisable(∧, ∨, P, Q, R)),
 
+    Axiom("Law of noncontradiction", P ∧ ~P ⩶ False),
+    Axiom("Law of excluded middle", P ∨ ~P ⩶ True)
+
     Axiom("Definition of Or", P ∨ True ⟹ True),
     Axiom("Definition of Or", True ∨ P ⟹ True),
     Axiom("Definition of Or", P ∨ False ⩶ P),

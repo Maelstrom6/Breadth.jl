@@ -71,7 +71,7 @@ macro new_constant(parent::Symbol, abstract_type::Symbol, name::Symbol)
     x = esc(name)
     return quote
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
-        $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
+        const $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
         Base.show(io::IO, x::Term{<:$(esc(abstract_type))}) = print(io, $(Meta.quot(name)))
         export $(esc(name))
     end
@@ -81,7 +81,7 @@ macro new_constant(parent::Symbol, abstract_type::Symbol, name::Symbol, codomain
     x = esc(name)
     return quote
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
-        $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
+        const $(esc(name)) = Term($(Meta.quot(name)), $(esc(abstract_type)))
         Base.show(io::IO, x::Term{<:$(esc(abstract_type))}) = print(io, $(Meta.quot(name)))
         $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
         export $(esc(name))
@@ -92,7 +92,7 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
     return quote
         abstract type $(esc(abstract_type)) <: $(esc(parent)) end
         struct $(esc(name)) <: $(esc(abstract_type)) end
-        $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(name)), $(esc(name)), x)
+        const $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(name)), $(esc(name)), x)
         $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
         $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
         $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))
@@ -106,7 +106,7 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
         return quote
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
-            $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
+            const $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
             $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
             $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
             $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))
@@ -119,7 +119,7 @@ macro new_function(parent::Symbol, abstract_type::Symbol, name::Symbol, domain, 
         return quote
             abstract type $(esc(abstract_type)) <: $(esc(parent)) end
             struct $(esc(name)) <: $(esc(abstract_type)) end
-            $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
+            const $(esc(name))(x::Vararg{Term}) = Term($(Meta.quot(latex_name)), $(esc(name)), x)
             $(esc(:domain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(domain))
             $(esc(:codomain))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(codomain))
             $(esc(:arity))(::Type{<:Term{<:$(esc(abstract_type))}}) = $(esc(arity))

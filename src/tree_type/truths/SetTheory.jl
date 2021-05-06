@@ -17,6 +17,6 @@ set_theory = [
 
     Axiom("Definition of the universal set", x ∈ (P ∪ Ω), x ∈ Ω),
 
-    Theorem("Intersections are subsets of Unions", x ∈ (A ∩ B), x ∈ (A ∪ B), Proof([])),
-    Theorem("Intersections are subsets of Unions", (A ∩ B) ⊂ (A ∪ B), TRUE, Proof([])),
+    #Theorem("Intersections are subsets of Unions", x ∈ (A ∩ B), x ∈ (A ∪ B), Proof([])),
+    #Theorem("Intersections are subsets of Unions", (A ∩ B) ⊂ (A ∪ B), TRUE, Proof([])),
 ]

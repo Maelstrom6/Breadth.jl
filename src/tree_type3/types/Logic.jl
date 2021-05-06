@@ -21,7 +21,7 @@ Base.show(io::IO, self::Term{<:ANot}) = print(io, "$(Meta.parse("$(data(self))($
 @new_function(ALogicFunction, AEquivalent, Equivalent, (Statements, Statements), Statements, 2, ⩶)
 
 @new_function(ALogicFunction, AElementOf, ElementOf, (Ω, Sets), Statements, 2, ∈, false)
-@new_function(ALogicFunction, ASubset, Subset, (Sets, Sets), Statements, 2, ⊂, false)
+@new_function(ALogicFunction, ASubset, Subset, (Sets, Sets), Statements, 2, ⊂)
 
 @new_function(ALogicFunction, AExists, Exists, (Ω, Sets, Statements), Statements, 3)
 Exists(x::Term{ElementOf}, y::Term) = Exists(args(x)[1], args(x)[2], y)

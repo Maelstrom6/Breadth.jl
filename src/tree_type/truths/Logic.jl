@@ -13,6 +13,9 @@ logic = [
     Axiom("And is distributive over Or", @distributive(∧, ∨, P, Q, R)...),
     Axiom("And is factorisable over Or", @factorisable(∧, ∨, P, Q, R)...),
 
+    Axiom("Law of noncontradiction", P ∧ ~P, FALSE),
+    # now prove Q ∨ ~Q is true which is the law of excluded middle
+
     Axiom("Definition of Or", P ∨ TRUE, TRUE),
     Axiom("Definition of Or", TRUE ∨ P, TRUE),
     Axiom("Definition of Or", P ∨ FALSE, P),

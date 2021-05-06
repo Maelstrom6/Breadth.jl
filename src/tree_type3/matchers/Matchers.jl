@@ -5,18 +5,26 @@ A truth can match with an expr in many ways
 # Returns whether it is applicable and the matched wilds
 # a truth can match with an expr in many ways
 function _isapplicable(expr::Term, truth::Term, wilds::Array{Term})::Tuple{Bool,Dict{Term,Set{Term}}}
-    result = true
+    _result = true
     matched = Dict(wild => Set{Term}() for wild in wilds)  # where the wild needs to take on this value and this value...
 
-    if (class(truth) <: AVariable) && (quick_range(expr) <: quick_range(truth))
-        result = true
+    # println(expr)
+    # println(truth)
+    # println(codomain(expr))
+    # println(codomain(truth))
+    # println(codomain(expr) ⊂ codomain(truth))
+    # println(result(codomain(expr) ⊂ codomain(truth)))
+    # println()
+    #is_subset = (result(codomain(expr) ⊂ codomain(truth)) == True)
+    if (class(truth) <: AVariable) #&& is_subset
+        _result = true
         push!(matched[truth], expr)
     elseif expr.class != truth.class
-        result = false
+        _result = false
     elseif expr.data != truth.data
-        result = false
+        _result = false
     elseif length(expr.args) != length(truth.args)
-        result = false
+        _result = false
     else
         for i in 1:length(expr.args)
             inner_result, inner_matched = _isapplicable(expr.args[i], truth.args[i], wilds)
@@ -24,18 +32,18 @@ function _isapplicable(expr::Term, truth::Term, wilds::Array{Term})::Tuple{Bool,
                 matched[wild] = union(matched[wild], inner_matched[wild])
             end
             if !inner_result
-                result = false
+                _result = false
             end
         end
     end
 
     for wild in wilds
         if length(matched[wild]) > 1
-            result = false
+            _result = false
         end
     end
 
-    return result, matched
+    return _result, matched
 end
 
 function replace(expr::Term, old::Term, new::Term)::Term
@@ -87,8 +95,9 @@ export isapplicable
 function rewrites(expr::Term, truth_table=truths)::Array{Term}
     result = Term[]
 
-    for truth in truth_table
-        if truth <: Term{<:AImplies}
+    for name_truth in truth_table
+        truth = name_truth.statement
+        if class(truth) <: AImplies
             subject = args(truth)[1]
             predicate = args(truth)[2]
             app, matches = isapplicable(expr, subject)
@@ -96,7 +105,7 @@ function rewrites(expr::Term, truth_table=truths)::Array{Term}
                 subs_right = replace(predicate, matches)
                 push!(result, subs_right)
             end
-        elseif truth <: Term{<:AEquivalent}
+        elseif class(truth) <: AEquivalent
             subject = args(truth)[1]
             predicate = args(truth)[2]
             app, matches = isapplicable(expr, subject)
@@ -115,12 +124,12 @@ function rewrites(expr::Term, truth_table=truths)::Array{Term}
     end
 
     # Repeat recursivley on the arguments
-    for (i, child) in enumerate(expr.args)
+    Threads.@threads for (i, child) in collect(enumerate(expr.args))
 
         child_rewrites = rewrites(child, truth_table)
         for j in 1:length(child_rewrites)
             # args = copy(expr.args)
-            args = collect(expr.args)
+            args::Array{Term{<:ABasic}} = collect(expr.args)
             args[i] = child_rewrites[j]
             child_rewrites[j] = Term(expr.data, expr.class, Tuple(args))
         end
@@ -129,3 +138,4 @@ function rewrites(expr::Term, truth_table=truths)::Array{Term}
 
     return unique(result)
 end
+export rewrites

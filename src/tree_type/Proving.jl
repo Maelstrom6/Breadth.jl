@@ -23,8 +23,9 @@ function english(x::Proof)
     end
     return result
 end
-Base.:(==)(x::Proof, y::Proof) = ((steps(x)[end] in steps(y)) || (steps(y)[end] in steps(x)))
-Base.hash(x::Proof) = hash(steps(x)[end])
+# Base.:(==)(x::Proof, y::Proof) = ((steps(x)[end] in steps(y)) || (steps(y)[end] in steps(x)))
+Base.hash(x::Proof, h::UInt) = hash(steps(x)[end], h)
+Base.:(==)(x::Proof, y::Proof) = steps(x)[end] == steps(y)[end]
 extensions(x::Proof, truth_table=truths) = [Proof(push!(copy(lines(x)), re)) for re in rewrites_wp(steps(x)[end], Int64[], truth_table)]
 
 struct Theorem <: ATruth
