@@ -1,9 +1,9 @@
 module Breadth
 import Base.~, Base.∈, Base.∪, Base.∩, Base.-#, Base.:(≡)
 using Memoize
-
+# using InternedStrings
 #include("tree_type3/__init__.jl")
-include("tree_type/TreeType.jl")
+# include("tree_type/TreeType.jl")
 
 # macro ex(func)
 #     return quote
@@ -13,5 +13,6 @@ include("tree_type/TreeType.jl")
 # end
 
 # @ex ∨
+
 
 end
